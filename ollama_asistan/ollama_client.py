@@ -53,4 +53,7 @@ def chat(
     }
     if tools:
         payload["tools"] = tools
-    return _post("/api/chat", payload)["message"]
+    data = _post("/api/chat", payload)
+    if "message" not in data:
+        raise RuntimeError(f"Ollama beklenmeyen bir cevap dondurdu: {str(data)[:200]}")
+    return data["message"]

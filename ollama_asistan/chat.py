@@ -80,13 +80,27 @@ Kisa, net ve Turkce yanit ver. Gerektiginde madde isaretleri kullan. Gereksiz
 teknik iddialardan kacin."""
 
 
+def _log_tool_call(name: str, arguments: dict) -> None:
+    """Arac cagrisini konsola yazar. Windows cp1254 gibi kodlamalarda emoji
+    UnicodeEncodeError'a yol acabilir; o durumda ASCII yedegine duseriz."""
+    try:
+        print(f"  🔧 {name}({arguments})")
+    except UnicodeEncodeError:
+        print(f"  [arac] {name}({arguments})")
+
+
 def run_tool_calls(tool_calls: list[dict]) -> list[dict]:
     """Modelin istedigi araclari calistirir ve sonuclari mesaj formatinda dondurur."""
     messages = []
     for call in tool_calls:
-        name = call["function"]["name"]
-        arguments = call["function"].get("arguments") or {}
-        print(f"  🔧 {name}({arguments})")
+        function = call.get("function") or {}
+        name = function.get("name")
+        arguments = function.get("arguments") or {}
+        if not name:  # bicimi bozuk arac cagrisi: sohbeti cökertme
+            messages.append({"role": "tool", "tool_name": "unknown",
+                             "content": "Bicimi bozuk arac cagrisi (isim eksik)."})
+            continue
+        _log_tool_call(name, arguments)
 
         function = tools.TOOLS.get(name)
         if function is None:
@@ -99,6 +113,32 @@ def run_tool_calls(tool_calls: list[dict]) -> list[dict]:
 
         messages.append({"role": "tool", "tool_name": name, "content": output})
     return messages
+
+
+def run_conversation(
+    messages: list[dict],
+    chat=ollama_client.chat,
+    model: str = ollama_client.CHAT_MODEL,
+    tool_schemas: list[dict] | None = None,
+    max_rounds: int = MAX_TOOL_ROUNDS,
+) -> dict:
+    """Sinirli (bounded) arac dongusu: model konusur, gerekirse araclari calistirir,
+    en fazla `max_rounds` tur doner ve son model mesajini verir.
+
+    `chat` disaridan verilebildigi icin bu fonksiyon Qwen olmadan (sahte chat ile)
+    test edilebilir. `messages` yerinde guncellenir.
+    """
+    if tool_schemas is None:
+        tool_schemas = tools.TOOL_SCHEMAS
+    message: dict = {}
+    for _ in range(max_rounds):
+        message = chat(messages, model=model, tools=tool_schemas)
+        messages.append(message)
+        tool_calls = message.get("tool_calls")
+        if not tool_calls:
+            break
+        messages.extend(run_tool_calls(tool_calls))
+    return message
 
 
 def main() -> None:
@@ -128,15 +168,7 @@ def main() -> None:
         messages.append({"role": "user", "content": question})
 
         try:
-            for _ in range(MAX_TOOL_ROUNDS):
-                message = ollama_client.chat(
-                    messages, model=args.chat_model, tools=tools.TOOL_SCHEMAS
-                )
-                messages.append(message)
-                tool_calls = message.get("tool_calls")
-                if not tool_calls:
-                    break
-                messages.extend(run_tool_calls(tool_calls))
+            message = run_conversation(messages, model=args.chat_model)
         except RuntimeError as exc:
             print(f"\nHata: {exc}\n")
             continue

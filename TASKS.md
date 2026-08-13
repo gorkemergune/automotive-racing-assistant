@@ -86,32 +86,37 @@
 
 ## Phase 4 — Testing
 
-- [ ] Direct answer
-- [ ] Weather
-- [ ] Part status
-- [ ] Regulations
-- [ ] Internet search
-- [ ] Multi-tool
-- [ ] Unknown information
-- [ ] Invalid arguments
-- [ ] Tool failure
-- [ ] Maximum tool rounds
+Deterministic `unittest` suite (47 tests, tests/) + live scenario eval (tests/eval/run_eval.py).
+See docs/testing.md.
+
+- [x] Direct answer (loop stops on no tool call; live A)
+- [x] Weather (failure paths mocked; live D)
+- [x] Part status (unit tests; live B)
+- [x] Regulations (unit tests; live C)
+- [x] Internet search (failure/fallback mocked; live E)
+- [x] Multi-tool (loop multi-call test; live F)
+- [x] Unknown information (unknown component/topic; live H non-fabrication)
+- [x] Invalid arguments
+- [x] Tool failure (tool exception caught)
+- [x] Maximum tool rounds (bounded loop test)
 
 ---
 
 ## Phase 5 — Reliability
 
-- [ ] Ollama connection failure
-- [ ] Malformed tool call
-- [ ] Unknown tool
-- [ ] Missing arguments
-- [ ] Invalid arguments
-- [ ] Tool exception
-- [ ] Search failure
-- [ ] Weather failure
-- [ ] Unknown component
-- [ ] Unknown regulation
-- [ ] Infinite-loop protection
+All verified by deterministic tests (see docs/testing.md reliability matrix).
+
+- [x] Ollama connection failure (ConnectionError -> RuntimeError, surfaced by main)
+- [x] Malformed tool call (missing function/name -> graceful message)
+- [x] Unknown tool
+- [x] Missing arguments (tool defaults -> validation message)
+- [x] Invalid arguments
+- [x] Tool exception (caught in run_tool_calls)
+- [x] Search failure (DDG->Wikipedia fallback, no fabrication)
+- [x] Weather failure (graceful message)
+- [x] Unknown component
+- [x] Unknown regulation
+- [x] Infinite-loop protection (MAX_TOOL_ROUNDS = 5 enforced)
 
 ---
 

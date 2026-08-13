@@ -103,6 +103,11 @@ The model consistently selects the correct tool for the defined scenarios.
 
 # Phase 4 — Reliability
 
+**Status: Completed (2026-08-13).** All failure modes below verified via a deterministic
+`unittest` suite (47 tests, mocked HTTP — no live APIs). Reliability matrix + how-to-run:
+docs/testing.md. Hardening added: default tool args, malformed-tool-call guard, malformed
+Ollama-response handling, Windows-safe (`cp1254`) tool logging with ASCII fallback.
+
 Handle:
 
 - Ollama errors
@@ -121,6 +126,11 @@ Expected failures do not crash the application.
 ---
 
 # Phase 5 — Testing
+
+**Status: Completed (2026-08-13).** `tests/` holds 47 deterministic `unittest` tests
+(stdlib only; HTTP mocked) — all passing. The Phase-3 24-scenario evaluation was moved to
+`tests/eval/run_eval.py` (live; requires Ollama). Deterministic unit tests, integration
+(tool-loop) tests, and the live model evaluation are kept separate. See docs/testing.md.
 
 Create reproducible tests.
 

@@ -8,12 +8,17 @@ sohbet dongusu cokmez.
 TOOL_SCHEMAS listesi ise modele "elinde su araclar var" demenin JSON halidir.
 """
 
+import datetime
 import html
 import re
 
 import requests
 
 import race_data
+
+# Guncel-bilgi aramalarinda modelin sorguya dogru yili koymasi icin (Faz 3'te bazen
+# "2023" gibi eski bir yil uydurdugu gozlendi). Sabit degil, calisma aninda gelir.
+CURRENT_YEAR = datetime.date.today().year
 
 TIMEOUT = 20
 HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"}
@@ -120,11 +125,12 @@ def get_weather(city: str) -> str:
         return f"Hava durumu alinamadi: {exc}"
 
 
-def check_part_status(component: str) -> str:
+def check_part_status(component: str = "") -> str:
     """Bir arac bileseninin DEMO durumunu race_data'dan getirir.
 
     Bilinen bilesenler: fren balatalari, fren diskleri, lastikler, motor yagi, aku.
-    Bilinmeyen bir bilesen icin istisna firlatmaz; acik bir aciklama doner.
+    Bilinmeyen bir bilesen icin istisna firlatmaz; acik bir aciklama doner. Argumanin
+    hic verilmemesi (varsayilan bos deger) de guvenli sekilde ele alinir.
     """
     if not component or not component.strip():
         return "Hangi arac bilesenini kontrol edecegimi belirtmelisiniz."
@@ -156,11 +162,12 @@ def check_part_status(component: str) -> str:
     return "\n".join(lines)
 
 
-def get_race_regulations(topic: str) -> str:
+def get_race_regulations(topic: str = "") -> str:
     """Bir yaris yonetmeligi konusunun DEMO ozetini race_data'dan getirir.
 
     Bilinen konular: frenler, lastikler, guvenlik, elektrik, surucu, teknik muayene.
     Bilinmeyen bir konu icin istisna firlatmaz; bilginin mevcut olmadigini soyler.
+    Argumanin hic verilmemesi (varsayilan bos deger) de guvenli sekilde ele alinir.
     """
     if not topic or not topic.strip():
         return "Hangi yonetmelik konusunu sorduğunuzu belirtmelisiniz."
@@ -200,7 +207,13 @@ TOOL_SCHEMAS = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "query": {"type": "string", "description": "Arama sorgusu"},
+                    "query": {
+                        "type": "string",
+                        "description": (
+                            "Arama sorgusu. Guncel/son bilgi isteniyorsa yil olarak "
+                            f"{CURRENT_YEAR} kullan; kullanicinin verdigi yili degistirme."
+                        ),
+                    },
                     "max_results": {"type": "integer", "description": "Sonuc sayisi (varsayilan 5)"},
                 },
                 "required": ["query"],

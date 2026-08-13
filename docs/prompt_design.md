@@ -151,3 +151,25 @@ For a 7B local model with **native** tool calling:
    `0.1` runs as noisy.
 
 The full final prompt lives in `ollama_asistan/chat.py` (`SYSTEM_PROMPT`).
+
+---
+
+## 7. Phase 4 / 5 follow-up (reliability & formal tests)
+
+Phase 4/5 kept the Phase-3 prompt as the baseline and added a deterministic `unittest`
+suite plus reliability hardening. Two prompt-adjacent findings:
+
+- **Search-year grounding.** Adding a "current year is {year}" line to the *system prompt*
+  was measured to **regress** the no-tool baseline: case A3 flipped to `get_weather` 5/5 with
+  the line vs 5/5 no-tool without it. It was **reverted**. The hint was instead placed on the
+  `internet_search` **query schema** (scoped to search-query construction), which fixed the
+  year (live: `query="… 2026"`) without touching the stable no-tool cases.
+
+- **Temp-0 is not fully deterministic here.** Re-running the same V0 prompt at `temperature=0`
+  produced both 19/21 and 18/21 across runs — the difference is entirely case A3 (an
+  open-ended advice question) flipping. The stable core (part/regulation/weather/search 3/3,
+  multi-tool 2/2, 0 leaks) holds across runs. The "19/21" baseline should be read as
+  "18–19/21, A3-dependent," not a fixed number.
+
+Full test architecture, the reliability scenario matrix, and how to run everything are in
+`docs/testing.md`.
