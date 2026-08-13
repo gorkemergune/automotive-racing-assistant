@@ -35,13 +35,13 @@
 
 - [x] Preserve `internet_search`
 - [x] Verify search functionality
-- [ ] Test search failure
+- [x] Test search failure
 
 ### Weather
 
 - [x] Implement/verify `get_weather`
 - [x] Test location handling
-- [ ] Test failure handling
+- [x] Test failure handling
 
 ### Vehicle
 
@@ -144,19 +144,3 @@ README.md written with actually-captured conversations and verified test results
 - [x] Limitations
 - [x] Future improvements
 - [x] Project structure
-
----
-
-## Phase 7 — Final Submission
-
-- [ ] Clean Git status
-- [ ] Remove secrets
-- [ ] Verify `.gitignore`
-- [ ] Run final tests
-- [ ] Verify README commands
-- [ ] Create final commit
-- [ ] Push GitHub repository
-- [ ] Create Hugging Face repository
-- [ ] Push project to Hugging Face
-- [ ] Verify both repositories
-- [ ] Prepare submission links
