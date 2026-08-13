@@ -122,26 +122,28 @@ All verified by deterministic tests (see docs/testing.md reliability matrix).
 
 ## Phase 6 — Documentation
 
-- [ ] Project overview
-- [ ] Assignment goals
-- [ ] Architecture
-- [ ] Technologies
-- [ ] Installation
-- [ ] Ollama setup
-- [ ] Model setup
-- [ ] Usage
-- [ ] Tool documentation
-- [ ] System prompt strategy
-- [ ] Real conversation #1
-- [ ] Real conversation #2
-- [ ] Real conversation #3
-- [ ] Real conversation #4
-- [ ] Multi-tool conversation
-- [ ] Tool call logs
-- [ ] Testing results
-- [ ] Limitations
-- [ ] Future improvements
-- [ ] Project structure
+README.md written with actually-captured conversations and verified test results.
+
+- [x] Project overview
+- [x] Assignment goals
+- [x] Architecture
+- [x] Technologies
+- [x] Installation
+- [x] Ollama setup
+- [x] Model setup
+- [x] Usage
+- [x] Tool documentation
+- [x] System prompt strategy
+- [x] Real conversation #1 (no-tool)
+- [x] Real conversation #2 (part status)
+- [x] Real conversation #3 (regulations)
+- [x] Real conversation #4 (weather)
+- [x] Multi-tool conversation (weather + part status)
+- [x] Tool call logs
+- [x] Testing results (47/47 deterministic; live eval)
+- [x] Limitations
+- [x] Future improvements
+- [x] Project structure
 
 ---
 

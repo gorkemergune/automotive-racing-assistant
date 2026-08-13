@@ -155,6 +155,11 @@ All core scenarios pass.
 
 # Phase 6 — Documentation
 
+**Status: Completed (2026-08-13).** Root README.md written for academic submission: overview,
+assignment mapping, scenario, architecture (+ Mermaid), setup, usage, tools, prompt strategy,
+actually-captured real conversations & tool-call logs, verified test results, limitations,
+future work, project structure. Supporting docs: docs/prompt_design.md, docs/testing.md.
+
 Complete:
 
 - README
